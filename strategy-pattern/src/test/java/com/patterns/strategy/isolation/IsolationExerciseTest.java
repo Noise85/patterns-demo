@@ -21,7 +21,7 @@ class IsolationExerciseTest {
         String result = creditCard.processPayment(100.0);
         
         assertThat(result)
-            .isEqualTo("Processed $100.0 via Credit Card");
+            .isEqualTo("Processed $100.00 via Credit Card");
     }
     
     @Test
@@ -31,7 +31,7 @@ class IsolationExerciseTest {
         String result = paypal.processPayment(50.0);
         
         assertThat(result)
-            .isEqualTo("Processed $50.0 via PayPal");
+            .isEqualTo("Processed $50.00 via PayPal");
     }
     
     @Test
@@ -41,7 +41,7 @@ class IsolationExerciseTest {
         String result = bankTransfer.processPayment(200.0);
         
         assertThat(result)
-            .isEqualTo("Processed $200.0 via Bank Transfer");
+            .isEqualTo("Processed $200.00 via Bank Transfer");
     }
     
     @Test
@@ -51,7 +51,7 @@ class IsolationExerciseTest {
         String result = context.executePayment(75.0);
         
         assertThat(result)
-            .isEqualTo("Processed $75.0 via Credit Card");
+            .isEqualTo("Processed $75.00 via Credit Card");
     }
     
     @Test
@@ -61,7 +61,7 @@ class IsolationExerciseTest {
         String result = context.executePayment(150.0);
         
         assertThat(result)
-            .isEqualTo("Processed $150.0 via PayPal");
+            .isEqualTo("Processed $150.00 via PayPal");
     }
     
     @Test
@@ -72,19 +72,19 @@ class IsolationExerciseTest {
         // First payment with credit card
         String result1 = context.executePayment(100.0);
         assertThat(result1)
-            .isEqualTo("Processed $100.0 via Credit Card");
+            .isEqualTo("Processed $100.00 via Credit Card");
         
         // Switch to PayPal
         context.setStrategy(new PayPalPayment());
         String result2 = context.executePayment(100.0);
         assertThat(result2)
-            .isEqualTo("Processed $100.0 via PayPal");
+            .isEqualTo("Processed $100.00 via PayPal");
         
         // Switch to Bank Transfer
         context.setStrategy(new BankTransferPayment());
         String result3 = context.executePayment(100.0);
         assertThat(result3)
-            .isEqualTo("Processed $100.0 via Bank Transfer");
+            .isEqualTo("Processed $100.00 via Bank Transfer");
     }
     
     @Test
@@ -93,12 +93,12 @@ class IsolationExerciseTest {
         PaymentContext context = new PaymentContext(new CreditCardPayment());
         
         assertThat(context.executePayment(0.0))
-            .isEqualTo("Processed $0.0 via Credit Card");
+            .isEqualTo("Processed $0.00 via Credit Card");
         
         assertThat(context.executePayment(9.99))
             .isEqualTo("Processed $9.99 via Credit Card");
         
         assertThat(context.executePayment(1000.50))
-            .isEqualTo("Processed $1000.5 via Credit Card");
+            .isEqualTo("Processed $1000.50 via Credit Card");
     }
 }

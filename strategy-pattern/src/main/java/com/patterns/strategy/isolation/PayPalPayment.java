@@ -10,9 +10,6 @@ public class PayPalPayment implements PaymentStrategy {
     
     @Override
     public String processPayment(double amount) {
-        // TODO: Implement PayPal payment processing
-        // Use String.format() to format the amount with a dollar sign
-        // Example: "Processed $50.0 via PayPal"
-        return null; // Replace this with your implementation
+        return String.format("Processed $%.2f via PayPal", amount);
     }
 }

@@ -3,10 +3,10 @@ package com.patterns.strategy.simulation.strategy;
 import com.patterns.strategy.simulation.model.PricingContext;
 import com.patterns.strategy.simulation.model.PricingResult;
 
+import java.util.Objects;
+
 /**
  * Seasonal promotion pricing with 20% discount.
- * 
- * TODO: Implement the PricingStrategy interface.
  * Applies during promotional periods.
  */
 public class SeasonalPromotionPricing implements PricingStrategy {
@@ -15,15 +15,16 @@ public class SeasonalPromotionPricing implements PricingStrategy {
     
     @Override
     public PricingResult calculatePrice(PricingContext context) {
-        // TODO: Implement seasonal promotion pricing
-        // Calculate 20% discount
-        // Return a PricingResult with calculated values
-        
-        return null; // Replace this
+        if(isApplicable(context)) {
+            return calculatePrice(context, PROMOTION_DISCOUNT_PERCENTAGE);
+        }
+        return calculatePrice(context, NO_DISCOUNT_RATE);
     }
-    
+
     @Override
-    public String getStrategyName() {
-        return "Seasonal Promotion Pricing";
+    public boolean isApplicable(PricingContext context) {
+        Objects.requireNonNull(context);
+        return context.isPromotionalPeriod();
     }
+
 }

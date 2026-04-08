@@ -19,8 +19,7 @@ public class PaymentContext {
      * Accept a PaymentStrategy parameter and store it in the field.
      */
     public PaymentContext(PaymentStrategy strategy) {
-        // TODO: Store the strategy in the field
-        // Remember to save the parameter to the instance variable
+        this.strategy=strategy;
     }
     
     /**
@@ -30,8 +29,7 @@ public class PaymentContext {
      * Accept a PaymentStrategy parameter and update the field.
      */
     public void setStrategy(PaymentStrategy strategy) {
-        // TODO: Update the current strategy
-        // Remember to save the parameter to the instance variable
+        this.strategy=strategy;
     }
     
     /**
@@ -44,8 +42,6 @@ public class PaymentContext {
      * Just delegate to the strategy object.
      */
     public String executePayment(double amount) {
-        // TODO: Delegate to the strategy and return the result
-        // Call strategy.processPayment(amount) and return the result
-        return null; // Replace this
+        return strategy.processPayment(amount);
     }
 }

@@ -10,9 +10,6 @@ public class BankTransferPayment implements PaymentStrategy {
     
     @Override
     public String processPayment(double amount) {
-        // TODO: Implement bank transfer payment processing
-        // Use String.format() to format the amount with a dollar sign
-        // Example: "Processed $200.0 via Bank Transfer"
-        return null; // Replace this with your implementation
+        return String.format("Processed $%.2f via Bank Transfer", amount);
     }
 }

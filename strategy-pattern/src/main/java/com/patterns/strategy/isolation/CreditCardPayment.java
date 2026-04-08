@@ -10,9 +10,6 @@ public class CreditCardPayment implements PaymentStrategy {
     
     @Override
     public String processPayment(double amount) {
-        // TODO: Implement credit card payment processing
-        // Use String.format() to format the amount with a dollar sign
-        // Example: "Processed $100.0 via Credit Card"
-        return null; // Replace this with your implementation
+        return String.format("Processed $%.2f via Credit Card", amount);
     }
 }

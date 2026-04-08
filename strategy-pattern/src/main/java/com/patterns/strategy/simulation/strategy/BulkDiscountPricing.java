@@ -3,35 +3,46 @@ package com.patterns.strategy.simulation.strategy;
 import com.patterns.strategy.simulation.model.PricingContext;
 import com.patterns.strategy.simulation.model.PricingResult;
 
+import java.util.Objects;
+
 /**
  * Bulk discount pricing based on item quantity.
- * 
- * TODO: Implement the PricingStrategy interface.
- * 
  * Discount tiers:
- * - 10-49 items: 5% off
- * - 50-99 items: 10% off
- * - 100+ items: 15% off
- * - Less than 10 items: no discount
+ * - TIER_1: 10-49 items: 5% off
+ * - TIER_2: 50-99 items: 10% off
+ * - TIER_3: 100+ items: 15% off
+ * - Less than TIER_1: no discount
  */
 public class BulkDiscountPricing implements PricingStrategy {
-    
+
+    private static final double TIER_3_THRESHOLD = 100;
+    private static final double TIER_3_DISCOUNT = 0.15;
+    private static final double TIER_2_THRESHOLD = 50;
+    private static final double TIER_2_DISCOUNT = 0.10;
+    private static final double TIER_1_THRESHOLD = 10;
+    private static final double TIER_1_DISCOUNT = 0.05;
+
     @Override
     public PricingResult calculatePrice(PricingContext context) {
-        // TODO: Implement bulk discount pricing
-        // Determine discount percentage based on item count:
-        // - itemCount >= 100: 15% discount
-        // - itemCount >= 50: 10% discount
-        // - itemCount >= 10: 5% discount
-        // - itemCount < 10: 0% discount
-        //
-        // Return a PricingResult with calculated values
-        
-        return null; // Replace this
+        if (isApplicable(context)) {
+            return calculatePrice(context, resolveDiscountRate(context.getOrder().getItemCount()));
+        } else {
+            return calculatePrice(context, NO_DISCOUNT_RATE);
+        }
     }
-    
+
     @Override
-    public String getStrategyName() {
-        return "Bulk Discount Pricing";
+    public boolean isApplicable(PricingContext context) {
+        Objects.requireNonNull(context, "context must not be null");
+        Objects.requireNonNull(context.getOrder(), "order must not be null");
+        return context.getOrder().getItemCount()>=TIER_1_THRESHOLD;
     }
+
+    private double resolveDiscountRate(int itemCount) {
+        if (itemCount >= TIER_3_THRESHOLD) return TIER_3_DISCOUNT;
+        if (itemCount >= TIER_2_THRESHOLD) return TIER_2_DISCOUNT;
+        if (itemCount >= TIER_1_THRESHOLD) return TIER_1_DISCOUNT;
+        return NO_DISCOUNT_RATE;
+    }
+
 }
