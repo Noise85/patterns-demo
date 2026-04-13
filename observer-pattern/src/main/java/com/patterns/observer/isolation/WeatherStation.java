@@ -19,24 +19,19 @@ public class WeatherStation implements WeatherSubject {
     
     @Override
     public void registerObserver(WeatherObserver observer) {
-        // TODO: Add observer to list if not already registered
-        // Check if observer is not null and not already in list
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(!this.observers.contains(observer)) {
+            this.observers.add(observer);
+        }
     }
     
     @Override
     public void removeObserver(WeatherObserver observer) {
-        // TODO: Remove observer from list
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.observers.remove(observer);
     }
     
     @Override
     public void notifyObservers() {
-        // TODO: Notify all registered observers
-        // Create defensive copy of observers list to avoid ConcurrentModificationException
-        // Iterate through copy and call update() on each observer
-        // Pass current temperature, humidity, and pressure values
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.observers.forEach(o -> o.update(temperature, humidity, pressure));
     }
     
     /**
@@ -47,10 +42,10 @@ public class WeatherStation implements WeatherSubject {
      * @param pressure    atmospheric pressure in hPa
      */
     public void setMeasurements(float temperature, float humidity, float pressure) {
-        // TODO: Update internal state and notify observers
-        // 1. Set this.temperature, this.humidity, this.pressure
-        // 2. Call notifyObservers()
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.pressure = pressure;
+        this.notifyObservers();
     }
     
     /**
@@ -59,8 +54,7 @@ public class WeatherStation implements WeatherSubject {
      * @return observer count
      */
     public int getObserverCount() {
-        // TODO: Return size of observers list
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.observers.size();
     }
     
     // Getters for current measurements (useful for pull model if needed)

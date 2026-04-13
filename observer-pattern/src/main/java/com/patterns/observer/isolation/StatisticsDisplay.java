@@ -7,7 +7,6 @@ public class StatisticsDisplay implements WeatherObserver {
     
     private float maxTemp = Float.MIN_VALUE;
     private float minTemp = Float.MAX_VALUE;
-    private float tempSum = 0.0f;
     private int numReadings = 0;
     private final WeatherSubject weatherStation;
     
@@ -18,18 +17,14 @@ public class StatisticsDisplay implements WeatherObserver {
      */
     public StatisticsDisplay(WeatherSubject weatherStation) {
         this.weatherStation = weatherStation;
-        // TODO: Register this observer with the weather station
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.weatherStation.registerObserver(this);
     }
     
     @Override
     public void update(float temperature, float humidity, float pressure) {
-        // TODO: Update statistics
-        // 1. Add temperature to tempSum
-        // 2. Increment numReadings
-        // 3. Update maxTemp if temperature > current max
-        // 4. Update minTemp if temperature < current min
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.maxTemp=Math.max(temperature, this.maxTemp);
+        this.minTemp=Math.min(temperature, this.minTemp);
+        numReadings++;
     }
     
     /**
@@ -38,11 +33,7 @@ public class StatisticsDisplay implements WeatherObserver {
      * @return formatted statistics string
      */
     public String display() {
-        // TODO: Calculate average and return formatted string
-        // Format: "Avg/Max/Min temperature: [avg]/[max]/[min]"
-        // Use String.format with %.1f for one decimal place
-        // Calculate average as tempSum / numReadings
-        throw new UnsupportedOperationException("Not implemented yet");
+        return String.format("Avg/Max/Min temperature = %.1f/%.1f/%.1f", getAvgTemp(), maxTemp, minTemp);
     }
     
     public float getMaxTemp() {
@@ -54,9 +45,7 @@ public class StatisticsDisplay implements WeatherObserver {
     }
     
     public float getAvgTemp() {
-        // TODO: Return average temperature (tempSum / numReadings)
-        // Handle case where numReadings is 0
-        throw new UnsupportedOperationException("Not implemented yet");
+        return (maxTemp+minTemp)/2;
     }
     
     public int getNumReadings() {

@@ -85,3 +85,5 @@ coverage/
 # Build tools
 .gradle/
 build/
+
+.fake

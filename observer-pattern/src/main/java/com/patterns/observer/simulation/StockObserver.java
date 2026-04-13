@@ -21,11 +21,11 @@ public interface StockObserver {
     String getObserverId();
     
     /**
-     * Determines if this observer is interested in the given event.
+     * Determines if this observer is bound to the given event.
      * Allows observers to filter events they don't care about.
      *
      * @param event the event to evaluate
      * @return true if observer should be notified, false otherwise
      */
-    boolean isInterestedIn(StockEvent event);
+    boolean supportsEvent(StockEvent event);
 }

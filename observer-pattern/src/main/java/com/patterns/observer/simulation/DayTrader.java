@@ -21,9 +21,7 @@ public class DayTrader implements StockObserver {
     
     @Override
     public void onStockUpdate(StockEvent event) {
-        // TODO: Track trading opportunities
-        // Increment opportunityCount when meaningful price change occurs
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.opportunityCount++;
     }
     
     @Override
@@ -32,10 +30,8 @@ public class DayTrader implements StockObserver {
     }
     
     @Override
-    public boolean isInterestedIn(StockEvent event) {
-        // TODO: Filter events
-        // Interested in all price changes where absolute percent change > 0.5
-        throw new UnsupportedOperationException("Not implemented yet");
+    public boolean supportsEvent(StockEvent event) {
+        return Math.abs(event.percentChange()) > 0.05d;
     }
     
     public int getOpportunityCount() {

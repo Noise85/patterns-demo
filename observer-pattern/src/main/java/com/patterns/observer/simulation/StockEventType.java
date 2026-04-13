@@ -1,5 +1,7 @@
 package com.patterns.observer.simulation;
 
+import java.util.List;
+
 /**
  * Types of stock events that can occur.
  */
@@ -32,5 +34,9 @@ public enum StockEventType {
     /**
      * Trading halted for this stock.
      */
-    TRADING_HALTED
+    TRADING_HALTED;
+
+    public boolean hasMatch(StockEventType... eventTypes) {
+        return eventTypes != null && List.of(eventTypes).contains(this);
+    }
 }

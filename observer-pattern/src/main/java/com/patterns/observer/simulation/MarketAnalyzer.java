@@ -9,7 +9,8 @@ import java.util.Map;
  * Aggregates statistics and trends across multiple stocks.
  */
 public class MarketAnalyzer implements StockObserver {
-    
+
+    public static final double THRESHOLD_PERCENTAGE = 0.01d;
     private final String analyzerId;
     private final Map<String, List<StockEvent>> stockEvents;
     
@@ -25,9 +26,7 @@ public class MarketAnalyzer implements StockObserver {
     
     @Override
     public void onStockUpdate(StockEvent event) {
-        // TODO: Record event for analysis
-        // Add event to stockEvents map (create list if doesn't exist)
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.stockEvents.computeIfAbsent(event.symbol(), k -> new ArrayList<>()).add(event);
     }
     
     @Override
@@ -36,10 +35,8 @@ public class MarketAnalyzer implements StockObserver {
     }
     
     @Override
-    public boolean isInterestedIn(StockEvent event) {
-        // TODO: Interested in all price change events
-        // Return true for PRICE_INCREASE and PRICE_DECREASE events
-        throw new UnsupportedOperationException("Not implemented yet");
+    public boolean supportsEvent(StockEvent event) {
+        return event.eventType().hasMatch(StockEventType.PRICE_DECREASE, StockEventType.PRICE_INCREASE);
     }
     
     /**
@@ -48,9 +45,13 @@ public class MarketAnalyzer implements StockObserver {
      * @return average percent change
      */
     public double getAveragePercentChange() {
-        // TODO: Calculate average percent change
-        // Get all events from stockEvents, extract percentChange, calculate average
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.stockEvents
+                .values()
+                .stream()
+                .flatMap(List::stream)
+                .mapToDouble(StockEvent::percentChange)
+                .average()
+                .orElse(1.0d);
     }
     
     /**
@@ -59,8 +60,14 @@ public class MarketAnalyzer implements StockObserver {
      * @return "BULLISH" if avg > 1%, "BEARISH" if avg < -1%, otherwise "NEUTRAL"
      */
     public String getTrend() {
-        // TODO: Determine trend based on average percent change
-        throw new UnsupportedOperationException("Not implemented yet");
+        double avgPercentChange = getAveragePercentChange();
+        if(avgPercentChange > THRESHOLD_PERCENTAGE) {
+            return "BULLISH";
+        }
+        if(avgPercentChange < -THRESHOLD_PERCENTAGE) {
+            return "BEARISH";
+        }
+        return "NEUTRAL";
     }
     
     /**
@@ -68,9 +75,8 @@ public class MarketAnalyzer implements StockObserver {
      *
      * @return number of unique stocks
      */
-    public int getTrackedStockCount() {
-        // TODO: Return number of unique stocks in stockEvents map
-        throw new UnsupportedOperationException("Not implemented yet");
+    public long getTrackedStockCount() {
+        return this.stockEvents.size();
     }
     
     /**
@@ -78,9 +84,8 @@ public class MarketAnalyzer implements StockObserver {
      *
      * @return total event count
      */
-    public int getTotalEventCount() {
-        // TODO: Count total events across all stocks
-        throw new UnsupportedOperationException("Not implemented yet");
+    public long getTotalEventCount() {
+        return this.stockEvents.values().stream().mapToLong(List::size).sum();
     }
     
     public Map<String, List<StockEvent>> getStockEvents() {

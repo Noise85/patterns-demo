@@ -32,12 +32,10 @@ public class PriceAlertMonitor implements StockObserver {
     
     @Override
     public void onStockUpdate(StockEvent event) {
-        // TODO: Check if alert should trigger
-        // 1. Verify this event is for our target symbol
-        // 2. Check threshold condition based on alertType
-        // 3. If triggered, set triggered = true and create alert message
-        // 4. Store alert message in lastAlertMessage
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(this.supportsEvent(event)) {
+            this.triggered = true;
+            this.lastAlertMessage = "Alert! " + event.symbol() + " price crossed $" + threshold;
+        }
     }
     
     @Override
@@ -46,13 +44,20 @@ public class PriceAlertMonitor implements StockObserver {
     }
     
     @Override
-    public boolean isInterestedIn(StockEvent event) {
-        // TODO: Filter events
-        // Only interested if:
-        // 1. Event is for our target symbol
-        // 2. Not already triggered (one-time alert)
-        // 3. Price crosses threshold in the correct direction
-        throw new UnsupportedOperationException("Not implemented yet");
+    public boolean supportsEvent(StockEvent event) {
+        if(!this.triggered && event.symbol().equals(targetSymbol)) {
+            return (priceIncreased(event) && alertType.equals(AlertType.ABOVE))
+                    || (priceDecreased(event) && alertType.equals(AlertType.BELOW));
+        }
+        return false;
+    }
+
+    public boolean priceIncreased(StockEvent event) {
+        return threshold.compareTo(event.newPrice()) < 0 && event.oldPrice().compareTo(event.newPrice()) < 0;
+    }
+
+    public boolean priceDecreased(StockEvent event) {
+        return threshold.compareTo(event.oldPrice()) < 0 && event.newPrice().compareTo(event.oldPrice()) < 0;
     }
     
     public boolean isTriggered() {

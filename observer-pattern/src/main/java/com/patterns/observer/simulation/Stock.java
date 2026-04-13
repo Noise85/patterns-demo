@@ -41,8 +41,8 @@ public class Stock {
      * @param observer the observer to register
      */
     public void registerObserver(StockObserver observer) {
-        // TODO: Add observer to list if not already registered
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(!this.observers.contains(observer))
+            this.observers.add(observer);
     }
     
     /**
@@ -51,8 +51,7 @@ public class Stock {
      * @param observer the observer to remove
      */
     public void removeObserver(StockObserver observer) {
-        // TODO: Remove observer from list
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.observers.remove(observer);
     }
     
     /**
@@ -62,14 +61,19 @@ public class Stock {
      * @param volume   trading volume
      */
     public void updatePrice(BigDecimal newPrice, long volume) {
-        // TODO: Update price and notify observers
-        // 1. Store old price: previousPrice = currentPrice
-        // 2. Update currentPrice and volume
-        // 3. Calculate price change and percent change
-        // 4. Determine event type (PRICE_INCREASE or PRICE_DECREASE)
-        // 5. Create StockEvent with all data
-        // 6. Call notifyObservers(event)
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.previousPrice = this.currentPrice;
+        this.currentPrice = newPrice;
+        this.volume = volume;
+        this.notifyObservers(new StockEvent(
+            this.symbol,
+            this.currentPrice.compareTo(this.previousPrice) > 0 ? StockEventType.PRICE_INCREASE : StockEventType.PRICE_DECREASE,
+            LocalDateTime.now(),
+            this.previousPrice,
+            this.currentPrice,
+            this.volume,
+            this.calculatePriceChange(this.previousPrice, this.currentPrice),
+            this.calculatePercentChange(this.previousPrice, this.currentPrice)
+        ));
     }
     
     /**
@@ -78,27 +82,34 @@ public class Stock {
      * @param event the stock event
      */
     private void notifyObservers(StockEvent event) {
-        // TODO: Notify observers with filtering
-        // 1. Create defensive copy of observers list
-        // 2. For each observer:
-        //    - Check if observer.isInterestedIn(event)
-        //    - If yes, call observer.onStockUpdate(event)
-        throw new UnsupportedOperationException("Not implemented yet");
+        getObservers().stream()
+                .filter(o -> o.supportsEvent(event))
+                .forEach(o -> o.onStockUpdate(event));
     }
     
     /**
      * Calculates percentage change between two prices.
      *
-     * @param oldPrice the old price
-     * @param newPrice the new price
+     * @param previousPrice the old price
+     * @param currentPrice the new price
      * @return percentage change
      */
-    private double calculatePercentChange(BigDecimal oldPrice, BigDecimal newPrice) {
-        // TODO: Calculate percent change
-        // Formula: ((newPrice - oldPrice) / oldPrice) * 100
-        // Use BigDecimal.divide with RoundingMode.HALF_UP
-        // Return as double
-        throw new UnsupportedOperationException("Not implemented yet");
+    private double calculatePercentChange(BigDecimal previousPrice, BigDecimal currentPrice) {
+        double percent = Math.abs(1-currentPrice.divide(previousPrice, 2, RoundingMode.HALF_UP).doubleValue());
+        if(previousPrice.compareTo(currentPrice) < 0) {
+            return percent;
+        }
+        return -percent;
+    }
+
+    /**
+     * Calculates price change between two prices.
+     * @param previousPrice the old price
+     * @param currentPrice the new price
+     * @return double the difference between the two prices
+     */
+    private BigDecimal calculatePriceChange(BigDecimal previousPrice, BigDecimal currentPrice) {
+        return currentPrice.subtract(previousPrice);
     }
     
     // Getters
@@ -122,9 +133,16 @@ public class Stock {
     public long getVolume() {
         return volume;
     }
+
+    public List<StockObserver> getObservers() {
+        return new ArrayList<>(this.observers);
+    }
+
+    public boolean isRegistered(StockObserver observer) {
+        return getObservers().contains(observer);
+    }
     
     public int getObserverCount() {
-        // TODO: Return size of observers list
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.observers.size();
     }
 }

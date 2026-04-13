@@ -16,14 +16,13 @@ public class CurrentConditionsDisplay implements WeatherObserver {
      */
     public CurrentConditionsDisplay(WeatherSubject weatherStation) {
         this.weatherStation = weatherStation;
-        // TODO: Register this observer with the weather station
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.weatherStation.registerObserver(this);
     }
     
     @Override
     public void update(float temperature, float humidity, float pressure) {
-        // TODO: Store temperature and humidity values
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.temperature = temperature;
+        this.humidity = humidity;
     }
     
     /**
@@ -32,9 +31,7 @@ public class CurrentConditionsDisplay implements WeatherObserver {
      * @return formatted current conditions string
      */
     public String display() {
-        // TODO: Return formatted string: "Current conditions: [temp]°C and [humidity]% humidity"
-        // Use String.format with %.1f for one decimal place
-        throw new UnsupportedOperationException("Not implemented yet");
+        return String.format("Current conditions: %.2f°C and %.2f humidity", this.temperature, this.humidity);
     }
     
     public float getTemperature() {

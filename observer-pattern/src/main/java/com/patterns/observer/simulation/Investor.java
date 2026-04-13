@@ -32,19 +32,18 @@ public class Investor implements StockObserver {
      * @param shares number of shares
      */
     public void addHolding(String symbol, int shares) {
-        // TODO: Add or update holding in holdings map
-        // If symbol exists, add to existing shares
-        // If symbol doesn't exist, create new entry
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.holdings.put(symbol, shares);
     }
     
     @Override
     public void onStockUpdate(StockEvent event) {
-        // TODO: Update portfolio value when stock prices change
-        // Calculate new value of holdings for this stock: shares * newPrice
-        // Update portfolioValue accordingly
-        // Log significant changes if needed
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.portfolioValue = this.portfolioValue.add(
+            event.priceChange().multiply(
+                new BigDecimal(
+                        holdings.get(event.symbol())
+                )
+            )
+        );
     }
     
     @Override
@@ -53,12 +52,9 @@ public class Investor implements StockObserver {
     }
     
     @Override
-    public boolean isInterestedIn(StockEvent event) {
-        // TODO: Filter events
-        // Only interested if:
-        // 1. We hold this stock (check holdings map)
-        // 2. Price change is significant (absolute percent change > 2.0)
-        throw new UnsupportedOperationException("Not implemented yet");
+    public boolean supportsEvent(StockEvent event) {
+        return holdings.containsKey(event.symbol()) &&
+                event.percentChange()>0.02d;
     }
     
     public Map<String, Integer> getHoldings() {

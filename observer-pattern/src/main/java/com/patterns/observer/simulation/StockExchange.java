@@ -2,7 +2,6 @@ package com.patterns.observer.simulation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Central registry for all stocks in the exchange.
@@ -22,8 +21,7 @@ public class StockExchange {
      * @param stock the stock to add
      */
     public void addStock(Stock stock) {
-        // TODO: Add stock to stocks map (key: symbol, value: stock)
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.stocks.put(stock.getSymbol(), stock);
     }
     
     /**
@@ -33,8 +31,7 @@ public class StockExchange {
      * @return the stock, or null if not found
      */
     public Stock getStock(String symbol) {
-        // TODO: Return stock from stocks map, or null if not found
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.stocks.get(symbol);
     }
     
     /**
@@ -45,9 +42,10 @@ public class StockExchange {
      * @return true if stock found and observer registered, false otherwise
      */
     public boolean observeStock(String symbol, StockObserver observer) {
-        // TODO: Find stock by symbol and register observer
-        // Return true if stock found, false otherwise
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(stocks.containsKey(symbol)) {
+            stocks.get(symbol).registerObserver(observer);
+        }
+        return stocks.get(symbol).isRegistered(observer);
     }
     
     /**
@@ -56,7 +54,6 @@ public class StockExchange {
      * @return stock count
      */
     public int getStockCount() {
-        // TODO: Return size of stocks map
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.stocks.size();
     }
 }

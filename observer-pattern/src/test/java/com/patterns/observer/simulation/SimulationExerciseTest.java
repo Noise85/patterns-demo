@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 /**
  * Tests for Observer Pattern - Simulation Exercise (Stock Market).
@@ -54,7 +55,7 @@ class SimulationExerciseTest {
         DayTrader trader = new DayTrader("Bob");
         apple.registerObserver(trader);
         
-        apple.updatePrice(new BigDecimal("151.50"), 1_000_000);
+        apple.updatePrice(new BigDecimal("157.50"), 1_000_000);
         
         assertThat(trader.getOpportunityCount()).isGreaterThan(0);
     }
@@ -70,7 +71,6 @@ class SimulationExerciseTest {
     @DisplayName("Should observe stock through exchange")
     void testObserveThroughExchange() {
         Investor investor = new Investor("Charlie");
-        
         boolean success = exchange.observeStock("AAPL", investor);
         
         assertThat(success).isTrue();
@@ -91,21 +91,21 @@ class SimulationExerciseTest {
     void testInvestorInterestFilter() {
         Investor investor = new Investor("Alice");
         investor.addHolding("AAPL", 100);
-        
+
         StockEvent smallChange = new StockEvent(
             "AAPL", StockEventType.PRICE_INCREASE, null,
             new BigDecimal("150.00"), new BigDecimal("150.50"),
-            1000000, new BigDecimal("0.50"), 0.33
+            1000000, new BigDecimal("0.50"), 0.003333333d
         );
         
         StockEvent largeChange = new StockEvent(
             "AAPL", StockEventType.PRICE_INCREASE, null,
             new BigDecimal("150.00"), new BigDecimal("155.00"),
-            2000000, new BigDecimal("5.00"), 3.33
+            2000000, new BigDecimal("5.00"), 0.033333333d
         );
         
-        assertThat(investor.isInterestedIn(smallChange)).isFalse();
-        assertThat(investor.isInterestedIn(largeChange)).isTrue();
+        assertThat(investor.supportsEvent(smallChange)).isFalse();
+        assertThat(investor.supportsEvent(largeChange)).isTrue();
     }
     
     @Test
@@ -114,8 +114,8 @@ class SimulationExerciseTest {
         DayTrader trader = new DayTrader("Bob");
         apple.registerObserver(trader);
         
-        apple.updatePrice(new BigDecimal("151.00"), 500_000);
-        apple.updatePrice(new BigDecimal("152.00"), 600_000);
+        apple.updatePrice(new BigDecimal("160.00"), 500_000);
+        apple.updatePrice(new BigDecimal("175.00"), 600_000);
         
         assertThat(trader.getOpportunityCount()).isEqualTo(2);
     }
@@ -127,18 +127,18 @@ class SimulationExerciseTest {
         
         StockEvent smallChange = new StockEvent(
             "AAPL", StockEventType.PRICE_INCREASE, null,
-            new BigDecimal("150.00"), new BigDecimal("150.10"),
-            1000000, new BigDecimal("0.10"), 0.07
+            new BigDecimal("150.00"), new BigDecimal("155.10"),
+            1000000, new BigDecimal("5.10"), 0.034
         );
         
         StockEvent largeChange = new StockEvent(
             "AAPL", StockEventType.PRICE_INCREASE, null,
-            new BigDecimal("150.00"), new BigDecimal("151.00"),
+            new BigDecimal("150.00"), new BigDecimal("160.00"),
             2000000, new BigDecimal("1.00"), 0.67
         );
         
-        assertThat(trader.isInterestedIn(smallChange)).isFalse();
-        assertThat(trader.isInterestedIn(largeChange)).isTrue();
+        assertThat(trader.supportsEvent(smallChange)).isFalse();
+        assertThat(trader.supportsEvent(largeChange)).isTrue();
     }
     
     @Test
@@ -168,8 +168,8 @@ class SimulationExerciseTest {
             500000, new BigDecimal("50.00"), 1.79
         );
         
-        assertThat(bot.isInterestedIn(appleEvent)).isTrue();
-        assertThat(bot.isInterestedIn(googleEvent)).isFalse();
+        assertThat(bot.supportsEvent(appleEvent)).isTrue();
+        assertThat(bot.supportsEvent(googleEvent)).isFalse();
     }
     
     @Test
@@ -273,7 +273,7 @@ class SimulationExerciseTest {
             }
             
             @Override
-            public boolean isInterestedIn(StockEvent event) {
+            public boolean supportsEvent(StockEvent event) {
                 return true;
             }
         };
@@ -306,7 +306,7 @@ class SimulationExerciseTest {
             }
             
             @Override
-            public boolean isInterestedIn(StockEvent event) {
+            public boolean supportsEvent(StockEvent event) {
                 return true;
             }
         });
@@ -314,7 +314,7 @@ class SimulationExerciseTest {
         apple.updatePrice(new BigDecimal("153.00"), 1_000_000);
         
         assertThat(capturedEvent[0].priceChange()).isEqualByComparingTo(new BigDecimal("3.00"));
-        assertThat(capturedEvent[0].percentChange()).isCloseTo(2.0, within(0.01));
+        assertThat(capturedEvent[0].percentChange()).isCloseTo(0.02, within(0.00001));
     }
     
     @Test
@@ -334,7 +334,7 @@ class SimulationExerciseTest {
             }
             
             @Override
-            public boolean isInterestedIn(StockEvent event) {
+            public boolean supportsEvent(StockEvent event) {
                 return true;
             }
         });

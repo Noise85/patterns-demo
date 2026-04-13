@@ -4,7 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 /**
  * Tests for Observer Pattern - Isolation Exercise (Weather Monitoring).
@@ -29,7 +30,7 @@ class IsolationExerciseTest {
     @DisplayName("Should register observer with station")
     void testRegisterObserver() {
         WeatherStation newStation = new WeatherStation();
-        CurrentConditionsDisplay display = new CurrentConditionsDisplay(newStation);
+        newStation.registerObserver(new CurrentConditionsDisplay(newStation));
         
         assertThat(newStation.getObserverCount()).isEqualTo(1);
     }
